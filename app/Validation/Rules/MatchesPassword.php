@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Validation\Rules;
+
+use App\Models\Member;
+
+use Respect\Validation\Rules\AbstractRule;
+
+class MatchesPassword extends AbstractRule {
+
+	protected $password;
+
+	public  function __construct($password) {
+		$this->password = $password;
+	}
+
+	public function validate($input) {
+		// Checks whether two 'raw' values are the same.
+		// Both values come from a form: $this->password is the confirm password, $input is the password, 
+		return $input === $this->password;
+		//return password_verify($input, $this->password);
+	}
+
+}

@@ -1,0 +1,99 @@
+body {
+	padding-top: 5px;
+	padding-bottom: 40px;
+}
+
+hr {
+	height: 1px;
+	background-color: gray;
+}
+
+
+meter {
+	/* Reset the default appearance */
+	-webkit-appearance:none;
+	-moz-appearance: none;
+	appearance: none;
+
+	margin: 0 auto 1em;
+	margin-top:3px;
+	width: 100%;
+	height: 0.8em;
+
+	/*Applicable only to Firefox */
+	background: none;
+	background-color: rgba(0,0,0,0.5);
+}
+
+meter::-webkit-meter-bar {
+	background: none;
+	background-color: rgba(0,0,0,0.5);
+}
+
+/* Webkit based browsers */
+
+meter[value="1"] { background-color: red; }
+meter[value="2"] { background-color: yellow; }
+meter[value="3"] { background-color: orange; }
+meter[value="4"] { background-color: green; }
+
+/* Gecko based browsers */
+
+meter[value="1"]::-moz-meter-bar { background-color: red; }
+meter[value="2"]::-moz-meter-bar { background-color: yellow; }
+meter[value="3"]::-moz-meter-bar { background-color: orange; }
+meter[value="4"]::-moz-meter-bar { background-color: green; }
+
+.feedback {
+    color: #9ab;
+    font-size: 90%;
+    padding: 0 .25em;
+    font-family: Courgette, cursive;
+    margin-top: 1em;
+}
+
+
+#home {
+	background: url(homeBackground.jpg) no-repeat center;
+	background-size: cover;
+	margin-bottom: 10px !important;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#knowledgebase {
+	background: url(knowledgebaseBackground.png) no-repeat center;
+	background-size: cover;
+	margin-bottom: 10px !important;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#membership {
+	background: url(membershipBackground.png) no-repeat center;
+	background-size: cover;
+	margin-bottom: 10px !important;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#about {
+	background: url(aboutBackground.png) no-repeat center;
+	background-size: cover;
+	margin-bottom: 10px !important;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+
+
+.title {
+	max-width: 275px;
+    color:white;
+    background-color: black;
+}
+
+.lower {
+	padding-top:50px;
+}
+

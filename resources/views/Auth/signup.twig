@@ -1,0 +1,89 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+	<div class="row" id="signup">
+
+		<div class="col-md-6 col-md-offset-3 pb-2 pt-2 px-2 bg-success">
+
+			<div class="card">
+
+				<img class="card-img-top" src="{{ base_url() }}/css/gardens.png" height="100px"  alt="Rhododendron Garden">
+
+				<div class="card-img-overlay">
+					<p class="card-text text-white">
+		   				<span style="font-family:'Great Vibes', serif; font-size:32px;">Familiaris </span>
+						<span style="font-size:32px;">Sign up</span>
+					</p>
+  				</div>
+  			</div>
+
+
+			<div class="card">
+  				<div class="card-body">
+  				
+				    <form action="{{ path_for('auth.signup') }}" method="post" autocomplete="off">
+
+				    	<div class="form-group{{ blah.name ? ' has-warning' : '' }} row">
+				    		<label class="form-control-label col-4" for="member" data-toggle="tooltip" data-placement="top" title="This name will be used to refer to you in any communication and by which you will be known to other members.">Name</label>
+				    		<div class="col-7">
+								<input type="text" name="name" id="memberName"  placeholder="Jane Doe"value="{{ old.name }}" class="form-control{{ blah.name ? ' form-control-warning' : ''}} form-control-sm">
+								<div class="form-control-feedback text-danger">{{ blah.name ? blah.name | first : ''}}
+								</div>
+							</div>
+				    	</div>
+
+				    	
+				    	<div class="form-group{{ blah.email ? ' has-warning' : '' }} row">
+				    		<label class="form-control-label col-4" for="email">Email</label>
+				    		<div class="col-7">
+								<input type="email" name="email" id="email" placeholder="you@domain.com" value="{{ old.email }}" class="form-control{{ blah.email ? ' form-control-warning' : ''}} form-control-sm">
+								<div class="form-control-feedback text-danger">{{ blah.email ? blah.email | first : ''}}
+								</div>
+							</div>
+				    	</div>
+
+				    	<div class="form-group{{ blah.password ? ' has-warning' : '' }} row">
+				    	
+				    		<label class="form-control-label col-4" for="password" data-toggle="tooltip" data-placement="top" title="You will need this whenever you sign in. Please make it secure: the strength meter will assess its strength.">Password</label>
+				    		<div class="col-7">
+								<input type="password" name="password" id="signup-password" class="form-control{{ blah.password ? ' form-control-warning' : ''}} form-control-sm">
+								<meter min="0" max="4" id="password-strength-meter"></meter>
+								<div id="password-strength-text"></div>
+								
+								<div class="form-control-feedback text-danger">{{ blah.password ? blah.password | first : ''}}
+								</div>
+							</div>
+						
+				    	</div>
+
+				    	<div class="form-group{{ blah.password_confirm ? ' has-warning' : '' }} row">
+				    		<label class="form-control-label col-4" for="password_confirm">Confirm Password</label>
+				    		<div class="col-7">
+								<input type="password" name="password_confirm" id="password_confirm" class="form-control{{ blah.password_confirm ? ' form-control-warning' : ''}} form-control-sm">
+								<div class="form-control-feedback text-danger">{{ blah.password_confirm ? blah.password_confirm | first : ''}}
+								</div>
+							</div>
+				    	</div>
+
+				    	<div class="form-group{{ blah.invitation ? ' has-warning' : '' }} row">
+				    		<label class="form-control-label col-4" for="invitation" data-toggle="tooltip" data-placement="top" title="An invitation code will have been sent to your email address if a member has invited you to join our website.">Invitation Code</label>
+				    		<div class="col-7">
+								<input type="text" name="invitation" id="invitation" class="form-control{{ blah.invitation ? ' form-control-warning' : ''}} form-control-sm">
+								<div class="form-control-feedback text-danger">{{ blah.invitation ? blah.invitation | first : ''}}
+								</div>
+							</div>
+						</div>
+
+				    	
+						<button type="submit" class="btn btn-success">Sign up</button>
+
+						{{ csrf.field | raw }}
+				    </form>
+				    
+				 </div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
