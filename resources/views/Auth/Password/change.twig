@@ -16,29 +16,29 @@
   				<div class="card-body">
 				    <form action="{{ path_for('auth.password.change') }}" method="post" autocomplete="off">
 				    	
-				    	<div class="form-group{{ blah.password_old ? ' has-warning' : '' }} row">
+				    	<div class="form-group{{ validationErrors.password_old ? ' has-warning' : '' }} row">
 				    		<label class="form-control-label col-4" for="password_old" >Current Password</label>
 				    		<div class="col-7">
-								<input type="password" name="password_old" id="password_old" class="form-control{{ blah.password_old ? ' form-control-warning' : ''}} form-control-sm">
-								<div class="form-control-feedback">{{ blah.password_old ? blah.password_old | first : ''}}
+								<input type="password" name="password_old" id="password_old" class="form-control{{ validationErrors.password_old ? ' form-control-warning' : ''}} form-control-sm">
+								<div class="form-control-feedback text-danger">{{ validationErrors.password_old ? validationErrors.password_old | first : ''}}
 								</div>
 							</div>
 				    	</div>
 
-				    	<div class="form-group{{ blah.password ? ' has-warning' : '' }} row">
+				    	<div class="form-group{{ validationErrors.password ? ' has-warning' : '' }} row">
 				    		<label class="form-control-label col-4" for="password">New Password</label>
 				    		<div class="col-7">
-								<input type="password" name="password" id="password" class="form-control{{ blah.password ? ' form-control-warning' : ''}} form-control-sm">
-								<div class="form-control-feedback">{{ blah.password ? blah.password | first : ''}}
+								<input type="password" name="password" id="password" class="form-control{{ validationErrors.password ? ' form-control-warning' : ''}} form-control-sm">
+								<div class="form-control-feedback text-danger">{{ validationErrors.password ? validationErrors.password | first : ''}}
 								</div>
 					    	</div>
 					    </div>
 
-					    <div class="form-group{{ blah.password_confirm ? ' has-warning' : '' }} row">
+					    <div class="form-group{{ validationErrors.password_confirm ? ' has-warning' : '' }} row">
 				    		<label class="form-control-label col-4" for="password_confirm">Confirm Password</label>
 				    		<div class="col-7">
-								<input type="password" name="password_confirm" id="password_confirm" class="form-control{{ blah.password_confirm ? ' form-control-warning' : ''}} form-control-sm">
-								<div class="form-control-feedback">{{ blah.password_confirm ? blah.password_confirm | first : ''}}
+								<input type="password" name="password_confirm" id="password_confirm" class="form-control{{ validationErrors.password_confirm ? ' form-control-warning' : ''}} form-control-sm">
+								<div class="form-control-feedback text-danger">{{ validationErrors.password_confirm ? validationErrors.password_confirm | first : ''}}
 								</div>
 					    	</div>
 					    </div>

@@ -44,9 +44,9 @@ class AuthController extends Controller {
 		if (!$authenticated) {
 			$this->log("login", 
             			$request->getParam('email'),
-            			'none',
-            			'none',
-            			'none',
+            			'None',
+            			'0',
+            			'None',
             			"fail");
 
 			$this->container->flash->addMessage('error', 'Could not sign you in with those details.');
@@ -55,9 +55,9 @@ class AuthController extends Controller {
 
 		$this->log("login", 
         			$request->getParam('email'),
-        			'none',
-        			'none',
-        			'none',
+        			'None',
+        			'0',
+        			'None',
         			"ok");
 		
 		$memberName = $this->container->auth->member()->getName();
@@ -90,7 +90,7 @@ class AuthController extends Controller {
 			'email' => v::noWhitespace()->notEmpty()->emailAvailable(),
 			'name' => v::notEmpty()->alpha('-'),
 			'password' => v::noWhitespace()->notEmpty(),
-			'password_confirm' => v::noWhitespace()->notEmpty()->matchesPassword($request->getParam('password')),
+			'password_confirm' => v::noWhitespace()->notEmpty()->confirmPassword($request->getParam('password')),
 			'invitation' => v::noWhitespace()->notEmpty()->matchesInvitation($request->getParam('email'))
 		]);
 
@@ -98,16 +98,16 @@ class AuthController extends Controller {
 		if ($validation->failed()) {
 			// Log an invalid attempt to sign up
 			$email = (isset($email)) ? $email : 'None';
-			$memberName = (isset($memberName)) ? "None" : $memberName;
-			$invitation = (isset($invitation)) ? "None" : $invitation;
+			$memberName = (isset($memberName)) ? $memberName : "None" ;
+			$invitation = (isset($invitation)) ? $invitation : "None" ;
             $this->log("register", 
             			$email,
             			$memberName,
-            			'None',
+            			"0",
             			$invitation,
             			"fail");
 
-			$this->container->flash->addMessage('error', "The marked fields are invalid. Please re-enter your detail(s)");
+			$this->container->flash->addMessage('error', "The marked field(s) are invalid. Please re-enter your details");
 			
 			return $response->withRedirect($this->container->router->pathFor('auth.signup'));
 		};

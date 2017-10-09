@@ -2,11 +2,10 @@
 
 namespace App\Validation\Rules;
 
-use App\Models\Member;
 
 use Respect\Validation\Rules\AbstractRule;
 
-class MatchesPassword extends AbstractRule {
+class ConfirmPassword extends AbstractRule {
 
 	protected $password;
 
@@ -15,9 +14,8 @@ class MatchesPassword extends AbstractRule {
 	}
 
 	public function validate($input) {
-		// Checks whether an input value, coming from a form, matches the
-		// hashed value in database
-		return password_verify($input, $this->password);
+		// Checks whether two values, coming from a form, are identical
+		return ($input === $this->password);
 	}
 
 }

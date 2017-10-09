@@ -4,7 +4,7 @@ namespace App\Validation\Rules;
 
 use Respect\Validation\Rules\AbstractRule;
 
-class MatchesRPreviousEmail extends AbstractRule {
+class MatchesPreviousEmail extends AbstractRule {
 
 	protected $email;
 

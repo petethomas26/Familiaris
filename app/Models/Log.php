@@ -20,7 +20,7 @@ class Log extends Model {
 		'date', // the date and time at which the event occurred
 		'type', // the type of event
 		'email',  // the email address associated with the event, if any
-		'member_name', // the name of the member who initiated the event
+		'name', // the name of the member who initiated the event
 		'member_id', // the id of the member who initiated the event
 		'invitation_code', // the invitation code associated with a sign up
 		'result' // whether or not the event was successful
@@ -33,7 +33,7 @@ class Log extends Model {
 			$table->dateTime('date');
 			$table->string('type', 15);
 			$table->string('email', 50);
-			$table->string('member_name', 100);
+			$table->string('name', 100);
 			$table->integer('member_id');
 			$table->string('invitation_code', 255);
 			$table->string('result',4);

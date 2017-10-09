@@ -39,11 +39,6 @@ class InstallController extends Controller {
 			'registration_code' => v::noWhitespace()->notEmpty()->matchesRegistration()
 		]);
 
-		// Create the log file if it does not already exist
-		if (! $this->container->db->schema()->hasTable('log')) {
-			Log::createTable($this->container);
-		};
-
 		if ($validation->failed()) {
             // Log an invalid attempt to install
             $this->log("install", 

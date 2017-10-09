@@ -2,6 +2,7 @@
 
 use Respect\Validation\Validator as v;
 use App\Install;
+use App\Models\Log;
 
 
 session_start();
@@ -245,3 +246,37 @@ require __DIR__ . '/../app/Routes/Auth/auth.php';
 require __DIR__ . '/../app/Routes/Knowledgebase/knowledgebase.php';
 require __DIR__ . '/../app/Routes/Membership/membership.php';
 
+require __DIR__ . '/../app/Routes/Notice/notice.php';
+
+/********************************************
+* Initialisation of database
+* *******************************************/
+$host = $container['settings']['db']['host'];
+$database = $container['settings']['db']['database'];
+$port = $container['settings']['db']['port'];
+$charset = $container['settings']['db']['charset'];
+$username = $container['settings']['db']['username'];
+$password = $container['settings']['db']['password'];
+try {
+	$conn = new PDO(
+		"mysql:host=$host;port=$port;charset=$charset", 
+		$username, 
+		$password, 
+		array(
+    		PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'"
+  		)
+  	) ;
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Create database
+    $sql = "CREATE DATABASE IF NOT EXISTS ". $database;
+    $conn->exec($sql);
+
+    // Create the Log table
+	if (! $container->db->schema()->hasTable('log')) {
+		Log::createTable($container);
+	};
+	
+} catch (PDOException $e) {
+		
+};
