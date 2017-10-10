@@ -51,6 +51,18 @@ EOT;
 		return $name;
 	}
 
+	/****************************************************************
+	* Create a random id as an invitation code
+	* ***************************************************************/
+	public function getIdentifier() {
+		$bytes = openssl_random_pseudo_bytes(23, $cstrong);
+		if (! $cstrong) {
+			dump("The getIdentifier function relies on a cryptographically weak implementation of openssl_random_pseudo_bytes");
+		}
+		$hex = bin2hex($bytes);
+		return $hex;
+	}
+
 	/*****************************************************************
 	* Searches for a person in the knowledgebase with the given
 	* first name, last name and date of birth where the given
@@ -121,7 +133,6 @@ EOT;
 		$this->container->mailer->FromName = 'Familiaris';
 		//$m->addReplyTo('reply@gmail.com', 'Reply address');
 		foreach ($to as $address) {
-			
 			$this->container->mailer->addAddress($address, 'Familiaris');
 		};
 
@@ -133,9 +144,9 @@ EOT;
 		$this->container->mailer->AltBody = strip_tags($body);
 
 		if ($this->container->mailer->send()) {
-			return true;
+			return "OK";
 		} else {
-			return false;
+			return $this->container->mailer->ErrorInfo;;
 		}
 	}
 	

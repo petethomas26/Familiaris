@@ -52,9 +52,11 @@ class MembershipController extends Controller {
 		$familiarisWebAddress = "familiaris.uk";
 		$familiarisAdminEmailAddress = "Familiaris Email Address"; //TO DO
 
-		$body = "<p>Dear " . $firstName . ",</p>" . $memberName . " has suggested that you might like to join Familiaris, a website containing our family tree. Our website contains information about people in our family (including our ancestors).</p><p>If you would like to know more, please take a look at our site: </p><p>" . $familiarisWebAddress . "</p><p>If you would like to join Familiaris, please sign up and enter the following invitation code (you can only view specific details about people if you have received an invitation and have signed up):</p><p>" . $invitationCode . " </p> <p>With best wishes</p><p>Familiaris</p><p>If you have any concerns about this email please email our administrators at " . $familirarisAdminEmailAddress . "</p>";
+		$body = "<p>Dear " . $firstName . ",</p>" . $memberName . " has suggested that you might like to join Familiaris, a website containing our family tree. Our website contains information about people in our family (including our ancestors).</p><p>If you would like to know more, please take a look at our site: </p><p>" . $familiarisWebAddress . "</p><p>If you would like to join Familiaris, please sign up and enter the following invitation code (you can only view specific details about people if you have received an invitation and have signed up):</p><p>" . $invitationCode . " </p> <p>With best wishes</p><p>Familiaris</p><p>If you have any concerns about this email please email our administrators at " . $familiarisAdminEmailAddress . "</p>";
 
-		$message = $this->sendInvitationEmail($toEmail, $body);
+		//Need to turn the single email address into an array of email addresses for later processinbg
+		$to = [$toEmail];
+		$message = $this->sendInvitationEmail($to, $body);
 
 		$this->container->flash->addMessage('info', $message);
 		return $response->withRedirect($this->container->router->pathFor('membership'));
@@ -78,16 +80,16 @@ class MembershipController extends Controller {
 	}
 
 	private function sendInvitationEmail($to, $body) {
-		$from = "Familiaris@gmail.com";// Make this the email address
+		$from = "petethomas26@zoho.com";// Make this the email address
 
 		$subject = "Invitation to join our family tree website";
 
-		if ($this->mailer($from, $to, $subject, $body)) {
-			$message ="Invitation sent";
+		$message = $this->mailer($from, $to, $subject, $body);
+		if ($message === 'OK') {
+			$message ="Invitation has been sent.";
 		} else {
-			$message = "Problem sending invitation; check email address and try again later.";
+			$message = "Problem sending invitation; check email address and try again later. ". $message;
 		}
-
 		return $message;
 	}
 

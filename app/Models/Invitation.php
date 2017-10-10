@@ -18,7 +18,6 @@ class Invitation extends Model {
 	protected $fillable = [
 		'email',
 		'code',
-		'vkey',
 		'inviter',
 		'person_id'
 	];
@@ -28,7 +27,6 @@ class Invitation extends Model {
 			$table->increments('id');
 			$table->string('email', 50);
 			$table->string('code', 255);
-			$table->string('vkey', 255);
 			$table->integer('inviter');
 			$table->integer('person_id');
 			$table->timestamps();

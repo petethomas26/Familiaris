@@ -4,6 +4,9 @@ use Respect\Validation\Validator as v;
 use App\Install;
 use App\Models\Log;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 session_start();
 
@@ -115,16 +118,16 @@ $container['validator'] = function($container) {
 };
 
 $container['mailer'] = function($container) {
-	$mailer = new PHPMailer;
+	$mailer = new PHPMailer();  // 'true' enables exceptions
 	$mailer->isSMTP();
 	$mailer->SMTPDebug = 2; // Not in a production environment
-	$mailer->Host = 'smtp.gmail.com';  // your email host, to test I use localhost and check emails using test mail server application (catches all  sent mails)
-	$mailer->SMTPAuth = true;                 // I set false for localhost
-	$mailer->SMTPSecure = 'ssl';              // set blank for localhost
-	$mailer->Port = 465;                           // 25 for local host
+	$mailer->Host = 'smtp.gmail.com';  // your email host, to test I use localhost and check emails using test mail server application (catches all sent mails)
+	$mailer->SMTPAuth = true;                 // Enables SMPT authentication ; I set false for localhost
+	$mailer->SMTPSecure = 'tls';         //previously 'ssl'     // set blank for localhost
+	$mailer->Port = 587;				// previously 465
+	$mailer->CharSet= 'utf-8';                           // 25 for local host
 	$mailer->Username = 'pete.thomas.26@gmail.com';    // I set sender email in my mailer call
 	$mailer->Password = '$WestDerby$';
-	$mailer->SMTPSecure = 'ssl';
 	$mailer->isHTML(true);
 
 	return $mailer;
