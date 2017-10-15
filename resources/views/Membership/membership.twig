@@ -12,6 +12,7 @@
     <div class="col-sm-2 sidenav lower text-sm-left">
       <p><a href="{{ path_for('auth.signup') }}">Sign Up</a></p>
       <p><a href="{{ path_for('invite') }}">Invite</a></p>
+      <p><a href="{{ path_for('notice') }}">Post a Notice</a></p>
     </div>
 
     <div class="col-sm-8 text-left"> 
@@ -29,11 +30,19 @@
         <p>You can invite someone by clicking here:</p>
 
         <a class="btn btn-primary btn-md" href="{{ path_for('invite') }}" role="button">Invite</a>
+
+        <hr>
+
+        <h4>How can I communicate with other Members?</h4>
+        <p>You can communicate with other members in one of two ways. Either by posting a notice which will appear on the Knowledgebase and Membership pages to be seen by all members, or by sending a private email to another member (or group of members).</p>
+
+        <a class="btn btn-primary btn-md" href="{{ path_for('postNotice') }}" role="button">Post Notice</a>
+        <a class="btn btn-primary btn-md" href="" role="button">Send Email</a>
         
     </div>
 
     <div class="col-sm-2 sidenav lower">
-      <a class="btn btn-success btn-sm btn-block" href="" role="button" data-toggle="tooltip" data-placement="top" title="Only the last 10 notices are shown. Click here to see all notices">Notices</a>
+      <a class="btn btn-success btn-sm btn-block" href="{{ path_for('notices', {'set':'0', 'no':'0', 'page':'membership'}) }}" role="button" data-toggle="tooltip" data-placement="top" title="Only the last 10 notices are shown. Click here to see all notices">Notices</a>
 
       {% for notice in notices|reverse %}
 
@@ -41,7 +50,7 @@
           <div class="d-flex w-100">
             <h6 class="mb-1">{{ notice.heading }}</h6>
           </div>
-          <small class="mb-1 pl-0 ml-0 text-left">{{ notice.notice}}</small>
+          <small class="mb-1 pl-0 ml-0 text-left">{{ notice.notice | raw }}</small>
           <small class="d-flex w-100 mb-1">{{ notice.created_at.toFormattedDateString() }}</small>
         </div>
 

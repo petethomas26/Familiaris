@@ -140,6 +140,12 @@ $container['notFoundHandler'] = function($container) {
     };    
 };
 
+$container['purifier'] = function($container) {
+	$config = HTMLPurifier_Config::createDefault();
+	$purifier = new HTMLPurifier($config);
+	return $purifier;
+};
+
 /*************************************
 * Controllers
 * ***********************************/
@@ -175,6 +181,10 @@ $container['MembershipController'] = function($container) {
 
 $container['KnowledgebaseController'] = function($container) {
 	return new \App\Controllers\Knowledgebase\KnowledgebaseController($container);
+};
+
+$container['NoticeController'] = function($container) {
+	return new \App\Controllers\Notice\NoticeController($container);
 };
 
 

@@ -24,6 +24,9 @@
 	<!-- The zxcvbn library for password strength meter -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.2.0/zxcvbn.js"></script>
 
+	<!-- The CKEditor -->
+	<script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
+
 
 </head>
 <body>
@@ -42,7 +45,10 @@
 	{% include 'templates/partials/footer.twig' %}
 	
 
-	
+	<!-- CKEditor -->
+	<script>
+			CKEDITOR.replace( 'editor1' );
+	</script>
 
 	<!-- bootstrap -->
 

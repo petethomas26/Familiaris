@@ -11,7 +11,16 @@ use Respect\Validation\Validator as v;
 class MembershipController extends Controller {
 
 	public function membership($request, $response) {
-		return $this->container->view->render($response, 'Membership/membership.twig');
+		// Get upto 10 latest Notices from db and pass them to Membership page to be displayed
+		$count =  \App\Models\Notice::count();
+		if ($count > 10) {
+			$skip = $count - 10;
+			$notices = \App\Models\Notice::skip($skip)->take(10)->get();
+		} else {
+			$notices = \App\Models\Notice::get();
+		}
+		
+		return $this->container->view->render($response, 'Membership/membership.twig', compact('notices'));
 	}
 
 	public function invite($request, $response) {
@@ -93,6 +102,48 @@ class MembershipController extends Controller {
 		return $message;
 	}
 
+	/***************************************************************************
+	* Causes Notices page to be displayed
+	* **************************************************************************/
+	public function notice($request, $response) {
+		
+		return $this->container->view->render($response, 'Membership/notice.twig');
+	}
 
+	/****************************************************************************
+	* Validates a Notice form and saves it to db
+	* **************************************************************************/ 
+	public function postNotice($request, $response) {
+
+		$validation = $this->container->validator->validate($request, [
+			'heading' => v::notEmpty(),
+			'editor1' => v::notEmpty()->isPure($this->container)
+		]);
+
+
+		if ($validation->failed()) {
+			$this->container->flash->addMessage('error', $validation->firstMessage());
+			return $response->withRedirect($this->container->router->pathFor('notice'));
+		};
+
+		// Get form elements
+		$heading = $request->getParam('heading');
+		$body = $request->getParam('editor1');
+		$memberId = $_SESSION['member'];
+
+		// Create a new model
+		$notice = new\App\Models\Notice();
+		$notice->member_id = $memberId;
+		$notice->heading = $heading;
+		$notice->notice = $body;
+
+		// Save model to db
+		$notice->save();
+
+		// Display updated membership page
+		return $response->withRedirect($this->container->router->pathFor('membership'));
+	}
+
+	
 
 }
