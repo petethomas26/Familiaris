@@ -85,6 +85,13 @@ meter[value="4"]::-moz-meter-bar { background-color: green; }
 	padding-right: 5px;
 }
 
+#userGuide {
+	background: url(userGuideBackground.png) no-repeat center;
+	background-size: cover;
+	margin-bottom: 10px !important;
+	padding-left: 5px;
+	padding-right: 5px;
+}
 
 
 .title {

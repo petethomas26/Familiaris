@@ -187,6 +187,14 @@ $container['NoticeController'] = function($container) {
 	return new \App\Controllers\Notice\NoticeController($container);
 };
 
+$container['GuideController'] = function($container) {
+	return new \App\Controllers\GuideController($container);
+};
+
+$container['DocController'] = function($container) {
+	return new \App\Controllers\Doc\DocController($container);
+};
+
 
 /********************************************
 * Models
@@ -260,6 +268,9 @@ require __DIR__ . '/../app/Routes/Knowledgebase/knowledgebase.php';
 require __DIR__ . '/../app/Routes/Membership/membership.php';
 
 require __DIR__ . '/../app/Routes/Notice/notice.php';
+
+require __DIR__ . '/../app/Routes/guide.php';
+require __DIR__ . '/../app/Routes/doc/doc.php';
 
 /********************************************
 * Initialisation of database
