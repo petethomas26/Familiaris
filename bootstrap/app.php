@@ -7,11 +7,19 @@ use App\Models\Log;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+use App\Mail\Mailer;
+
+use App\View\Factory;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 session_start();
 
 // Bring in all dependencies
 require __DIR__ . '/../vendor/autoload.php';
+
+date_default_timezone_set('Europe/London');
+
 
 //Load the dotenv file containing config details (development or production)
 $mode = file_get_contents(__DIR__ . '/mode.php');
@@ -33,7 +41,8 @@ $app = new \Slim\App([
 			'charset'   => getenv("DB_CHARSET"),
 			'collation' => getenv("DB_COLLATION"),
 			'prefix'    => getenv("DB_PREFIX") 
-		]
+		],
+		'baseUrl' => getenv('BASE_URL')
 	]
 ]);
 
@@ -60,7 +69,7 @@ $container['db'] = function($container) use($capsule) {
 };
 
 // Adding installation
- $container['install'] = function($container) {
+$container['install'] = function($container) {
 	return new \App\Install\Install;
 };
 
@@ -110,6 +119,9 @@ $container['view'] = function($container) use ($mode){
 
 	$view->getEnvironment()->addGlobal('mode', $mode);
 
+	// Alternative to Twig's base_url() - a global constant for use with HTTPS rather than HTTP
+	$view->getEnvironment()->addGlobal('base_url', $container['settings']['baseUrl']);
+
 	return $view;
 };
 
@@ -118,33 +130,85 @@ $container['validator'] = function($container) {
 };
 
 $container['mailer'] = function($container) {
-	$mailer = new PHPMailer();  // 'true' enables exceptions
+	$mailer = new PHPMailer(true);  // 'true' enables exceptions
 	$mailer->isSMTP();
-	$mailer->SMTPDebug = 2; // Not in a production environment
-	$mailer->Host = 'smtp.gmail.com';  // your email host, to test I use localhost and check emails using test mail server application (catches all sent mails)
-	$mailer->SMTPAuth = true;                 // Enables SMPT authentication ; I set false for localhost
-	$mailer->SMTPSecure = 'tls';         //previously 'ssl'     // set blank for localhost
-	$mailer->Port = 587;				// previously 465
-	$mailer->CharSet= 'utf-8';                           // 25 for local host
-	$mailer->Username = 'pete.thomas.26@gmail.com';    // I set sender email in my mailer call
-	$mailer->Password = '$WestDerby$';
+	$mailer->SMTPAuth = true;       // Enables SMPT authentication ; set false for localhost
+
+	$mailer->SMTPDebug = 3; 		// Not in a production environment
+	$mailer->Debugoutput = 'html'; 	// Not in a production environment
+	
+	$mailer->Host = 'smtp.familiaris.uk'; //'smtp.gmail.com'; 					
+	$mailer->Username = 'admin@familiaris.uk'; //'pete.thomas.26@gmail.com'; 
+	$mailer->Password = '$NewportPagnellAdmin$'; //'$WestDerby26$';  
+	
+	$mailer->SMTPSecure = 'tls'; 	//'tls' previously 'ssl'  ;   set blank for localhost
+	$mailer->Port = 587;  			// previously 465  - 25 for local host
+	$mailer->CharSet= 'utf-8';                          
+	
 	$mailer->isHTML(true);
 
-	return $mailer;
+	$mailer->SMTPOptions = array(
+      'ssl' => array(
+          'verify_peer' => false,
+          'verify_peer_name' => false,
+          'allow_self_signed' => false
+      )
+    );
+
+    //return new Mailer($container['view'], $mailer); //New emailer
+
+	return $mailer;  // Old emailer
 };
+
+// Custom error handlers
 
 $container['notFoundHandler'] = function($container) {
     return function($request, $response) use ($container)
     {
-        return $container['view']->render($response->withStatus(404), 'error\404.twig');
+        return $container['view']->render($response->withStatus(404), 'Error\404.twig');
     };    
 };
+
+$container['errorHandler'] = function($container) {
+	return function($request, $response, $exception) use ($container) {
+		return $container['view']->render($response->withStatus(503), 'Error\503.twig');			
+	};
+};
+
+// With which to sanitize input data
 
 $container['purifier'] = function($container) {
 	$config = HTMLPurifier_Config::createDefault();
 	$purifier = new HTMLPurifier($config);
 	return $purifier;
 };
+
+// Random number library
+$container['randomLib'] = function($container) {
+	$factory = new RandomLib\Factory;
+	$generator = $factory->getMediumStrengthGenerator();
+	return $generator;
+};
+
+/*************************************************
+* Required in order to interface paginator 
+* into our code without using more Laravel code
+* ***********************************************/
+
+LengthAwarePaginator::viewFactoryResolver(function() {
+	return new Factory;
+});
+
+LengthAwarePaginator::defaultView('pagination/pagination.twig');
+
+Paginator::currentPathResolver(function() {
+	return isset($_SERVER['REQUEST_URI']) ? strtok($_SERVER['REQUEST_URI'], '?') : '/';
+});
+
+Paginator::currentPageResolver(function() {
+	return isset($_GET['page']) ? $_GET['page'] : 1;
+});
+
 
 /*************************************
 * Controllers
@@ -185,6 +249,10 @@ $container['KnowledgebaseController'] = function($container) {
 
 $container['NoticeController'] = function($container) {
 	return new \App\Controllers\Notice\NoticeController($container);
+};
+
+$container['AdminController'] = function($container) {
+	return new \App\Controllers\Administration\AdminController($container);
 };
 
 $container['GuideController'] = function($container) {
@@ -263,6 +331,7 @@ require __DIR__ . '/../app/Routes/home.php';
 
 require __DIR__ . '/../app/Routes/about.php';
 
+require __DIR__ . '/../app/Routes/Administration/administration.php';
 require __DIR__ . '/../app/Routes/Auth/auth.php';
 require __DIR__ . '/../app/Routes/Knowledgebase/knowledgebase.php';
 require __DIR__ . '/../app/Routes/Membership/membership.php';
@@ -270,10 +339,12 @@ require __DIR__ . '/../app/Routes/Membership/membership.php';
 require __DIR__ . '/../app/Routes/Notice/notice.php';
 
 require __DIR__ . '/../app/Routes/guide.php';
-require __DIR__ . '/../app/Routes/doc/doc.php';
+require __DIR__ . '/../app/Routes/Doc/doc.php';
 
 /********************************************
-* Initialisation of database
+* Check database
+* Ensure that contact is made with database
+* Check that Log table exists
 * *******************************************/
 $host = $container['settings']['db']['host'];
 $database = $container['settings']['db']['database'];
@@ -282,19 +353,9 @@ $charset = $container['settings']['db']['charset'];
 $username = $container['settings']['db']['username'];
 $password = $container['settings']['db']['password'];
 try {
-	$conn = new PDO(
-		"mysql:host=$host;port=$port;charset=$charset", 
-		$username, 
-		$password, 
-		array(
-    		PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'"
-  		)
-  	) ;
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // Create database
-    $sql = "CREATE DATABASE IF NOT EXISTS ". $database;
-    $conn->exec($sql);
+	// try to connect to database
+	$conn = new PDO("mysql:host=$host;port=$port;dbname=$database", $username, $password);
+	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Create the Log table
 	if (! $container->db->schema()->hasTable('log')) {
@@ -302,5 +363,7 @@ try {
 	};
 	
 } catch (PDOException $e) {
-		
+	
+	
 };
+

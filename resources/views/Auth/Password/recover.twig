@@ -1,0 +1,49 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+	<div class="row">
+
+		<div class="col-md-6 col-md-offset-3 col-md-6 pb-2 pt-2 px-2 bg-success">
+			<div class="card">
+
+				<img class="card-img-top" src="{{ base_url }}/css/gardens.png" height="100px"  alt="Rhododendron Garden">
+      
+	  			<div class="card-img-overlay">
+					<p class="card-text text-white">
+		   				<span style="font-family:'Great Vibes', serif; font-size:32px;">Familiaris </span>
+						<span style="font-size:32px;">Change Password</span>
+					</p>
+  				</div>
+
+  			</div>
+
+  			<div class="card">
+				
+  				<div class="card-body">
+  					<p>Enter your email address to start your password recovery,</p>
+				    <form action="{{ path_for('auth.password.recover') }}" method="post" autocomplete="off">
+
+				    	<div class="form-group{{ validationErrors.email ? ' has-warning' : '' }} row">
+				    		<label class="form-control-label col-4" for="email">Email</label>
+				    		<div class="col-7">
+								<input type="email" name="email" id="email" placeholder="you@domain.com" value="{{ old.email }}" class="form-control{{ validationErrors.email ? ' form-control-warning' : ''}}">
+								<div class="form-control-feedback">{{ validationErrors.email ? validationErrors.email | first : ''}}
+								</div>
+							</div>
+				    	</div>
+				    	
+						<button type="submit" class="btn btn-success">Request Recovery</button>
+
+						<a href="{{ path_for('home') }}" role="button" class="btn btn-secondary">Cancel</a>
+
+						{{ csrf.field | raw }}
+				    </form>
+				    
+				 </div>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}

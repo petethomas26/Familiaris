@@ -10,11 +10,19 @@
   <div class="container-fluid text-center">    
     <div class="row content">
       <div class="col-sm-2 sidenav lower text-sm-left">
-        <p><a href="{{ path_for('auth.signup')}}">Sign up</a></p>
-        <p><a href="#">Find Members</a></p>
+        <!-- Visitors can sign up -->
+        {% if not auth.check %}
+          <p><a href="{{ path_for('auth.signup') }}">Sign up</a></p>
+        {% endif %}
+        <!-- Members can find other members -->
+        {% if  auth.check %}
+          <p><a href="{{ path_for('findMember') }}">Find Member</a></p>
+        {% endif %}
+        <!-- Anyone can read the user guide -->
         <p><a href="#examples">Examples</a></p>
         <p><a href="#how-to">How to...</a></p>
       </div>
+      
       <div class="col-sm-8 text-left"> 
           
           <h3 id="guide-top">Introduction</h3>
@@ -23,36 +31,37 @@
           </p>
           <p>
           <ul>
-            <li>A <b>member</b> is anyone who has signed up to use the website and will be a living member of our family. 
-            <li>A <b>person</b> is someone, living or dead, about whom information is stored in the <b>knowledgebase</b>. We refer to the collection of data about a single person as a <b>record</b>. 
+            <li>A <strong>member</strong> is anyone who has signed up to use the website and will be a living member of our family. 
+            <li>A <strong>person</strong> is someone, living or dead, about whom information is stored in the <strong>knowledgebase</strong>. We refer to the collection of data about a single person as a <b>record</b>. 
           </ul>
-          <p>
-            The website has two major components: the membership page and the knowledgebase page. The <b>membership page</b> deals with signing up and signing in activities as well as communication between members. The <b>knowledgebase page</b> deals with viewing and maintaining the knowledgebase. 
-          </p>
           <p>Normally, there will be a person record for each member. Once deceased, a member will no longer have a membership, but their person record will remain in the knowledgebase.
           </p>
+          <p>
+            The website has two major components: the membership page and the knowledgebase page. The <strong>membership page</strong> deals with signing up and signing in activities as well as communication between members. The <strong>knowledgebase page</strong> deals with viewing and maintaining the knowledgebase. 
+          </p>
+          
           <h3>Interacting with the knowledgebase</h3>
           <p>
             The knowledgebase is a collection of person records in the form of a family tree with each individual connected to their parents and their children (where this information is known). As a member of the website you can amend the information contained in (almost) any person record and you can add new people to the knowledgebase. When you sign up to be a member you will be asked to create a person record containing information about yourself. However, it may be the case that a person record for you is already in the knowledgebase, added there by another member. In this case you will be asked to view your record and, if you wish, add to it or amend whatever is already there.
           </p>
           <p>
-           When you interact with the knowledgebase, you will often want to view specific person records. This means asking the system to find the appropriate person record and display it for you. There are two ways to access a specific person record: either by specifying a person's name and their date of birth or by inputting the person's reference number (if you happen to know it). 
+           When you interact with the knowledgebase, you will often want to view specific person records. This means asking the system to find the appropriate person record and to display it for you. There are two ways to access a specific person record: either by specifying a person's name and their date of birth or by inputting the person's reference number (if you happen to know it). 
           </p>
           <p>
             Accessing a person record by inputting a name is useful when searching for someone for whom you do not have precise or detailed information. The system will search the knowledgebase for people who match, either exactly or approximately, the information you have supplied. If your data identifies more than a single person, you will be shown a list of all matching people from which you can select one to view.
           </p>
           <p>
-            Whenever a person record is displayed you will see their reference number at the top of the display. The reference number can be used to access the person on future occasions. To help you remember reference numbers, there is a facility, known as 'remembering' for you to record reference numbers along with names of people you want to remember. You can access your list of remembered people to help in retrieving their full person record.
+            Whenever a person record is displayed you will see their reference number at the top of the display. The reference number can be used to access the person on future occasions. To help you remember reference numbers, there is a facility - known as 'remembering' - for you to record reference numbers and names of people you want to remember. You can access your list of remembered people to help in retrieving their full person record.
           </p>
           <p>
-            The data in a person record is divided into two categories: identification data and personal details. If the person is living (and quite likely to be a member) you can view their identification data and those parts of their personal details that they have chosen to be public.  
+            The data in a person record is divided into two categories: identification data and personal details. If the person is living (and quite likely to be a member) you can view their identification data and those parts of their personal details that they have chosen to make public.  
           </p>
           <h3>Your personal data</h3>
           <p>
-            As a member, you have control over the majority of data in your person record. The intention is that identification data (name, date of birth, parents, children etc) relates to the structure of the family tree and is public, viewable by other members. Personal details are considered private unless you choose to make them public. As a member, you can add personal details to your record and choose which details to make public.
+            As a member you have control over the majority of data in your person record. The intention is that identification data (name, date of birth, parents, children etc) relates to the structure of the family tree and is public, viewable by other members. Personal details are considered private unless you choose to make them public. As a member, you can add personal details to your record and choose which details to make public.
           </p>
           <p>
-            A few years after your death, all your private data will become public. The idea is to make private data public only when it is safe to do so. That is, when it will not cause offense to other members. Therefore, you can state when your private data becomes public but this cannot be indefinitely (otherwise, why record it in the first place?). Advice is currently being sought as to the full rules that should apply in this area.
+            A few years after your death, all your private data will become public. The idea is to make private data public only when it is safe to do so. That is, when it will not cause offense or embarassment to other members. Therefore, you can state when your private data becomes public but this cannot be indefinitely (otherwise, why record it in the first place?). Advice is currently being sought as to the full rules that should apply in this area.
           </p>
           <h3>Other persons' data</h3>
           <p>
@@ -76,10 +85,10 @@
             The rules for accessing the website are a matter for agreement between members. 
           </p>
           <p>
-            The website supports a mechanism for debate and agreement over the rules and administation of the website. Any member can suggest a topic for debate through the Notices and Opinionaire mechanisms. Any member can add a notice (notices appear on the right hand side of the Knowledgebase and Membership pages) and can suggest topics for discussion. Responses are added as notices. In due course, a fully fledged blog will be introduced to support discussion.
+            The website supports a mechanism for debate and agreement over the rules and administation of the website. Any member can suggest a topic for debate through the Notices and Opinionaire mechanisms. Any member can add a notice (notices appear on the right hand side of the Knowledgebase and Membership pages) and can suggest topics for discussion. Responses are added as notices. In due course, a fully fledged blog will be added to the website to support discussion.
           </p>
           <p>
-            When a member wishes to canvass the opinion of other members, they can create an opinionaire. The opinionaire mechanism allows a member to specify a statement that they would like other members to respond to (to vote on whether they agree or disagree with the statement). For example, there could be a statement expressing a wish to change a rule about the use of the website which, if enough members agree with the proposal, should be enacted (see The Role of Administrators). When creating an opinionaire the member can specify a date by which other members should respond (vote) and the result of the ballot notified to all members.
+            When a member wishes to canvass the opinion of other members more widely, they can create an opinionaire. The opinionaire mechanism allows a member to specify a statement that they would like other members to respond to (to vote on whether they agree or disagree with the statement). For example, there could be a statement expressing a wish to change a rule about the use of the website which, if enough members agree with the proposal, should be enacted (see The Role of Administrators). When creating an opinionaire the member can specify a date by which other members should respond (vote) and after which the result of the ballot will notified to all members.
           </p>
           <h3>The Role of Administrators</h3>
           <p>
@@ -133,10 +142,10 @@
           </table>
 
           <h3>Person records and the family tree</h3>
-          <p>Most often you will interact withthe knowledgebase by viewing, editing and creating individual person records.` From time to time you may wish to view (parts of) the family tree where you will see the relationships between people through the generations. Familiaris enables you to view the tree in a variety of ways: the tree of all ancestors of a particular person, the male or female line of ancestors of a particular person and the descendants of a particular person.
+          <p>Most often you will interact with the knowledgebase by viewing, editing and creating individual person records. From time to time you may wish to view (parts of) the family tree where you will see the relationships between people through the generations. Familiaris enables you to view the tree in a variety of ways: the tree of all ancestors of a particular person, the male or female line of ancestors of a particular person and the descendants of a particular person.
           </p>
           <p>
-          In typical use you will go to the Knowledgebase page to search for a person by specifying their name and birth date, which will display the person record ready for you to view and edit. Once at a specific person page you can choose to view the ancestors of that person. To see other versions of the family tree go to the Family Tree page.
+          In typical use you will go to the Knowledgebase page to search for a person by specifying their name and birth date, which will display the person record ready for you to study and edit. Once at a specific person page you can choose to view the ancestors of that person. To see other versions of the family tree go to the Family Tree page.
           </p>
           
           <h3 id="examples">Examples</h3>
@@ -149,7 +158,7 @@
               <li> Go to the Knowledgebase page. </li>
               <li> Use the menu on the left hand column and click on either 'Get my details' to view the information about yourself or click on 'Find person' to search for a specific person.</li>
               <li> If you have clicked on 'Find person' a form will appear into which you can enter the name of the person and their date of birth (needed to distinguish between different people with the same name).</li>
-              <li> If the search is successful the details for the person found will appear for you to view. If the search finds multiple people matching your search criteria they will be listed and you can choose one to view.</li>
+              <li> If the search is successful the details for the person found will appear for you to view. If the search finds multiple people matching your search criteria they will be listed and you can choose one to look at.</li>
             </ol>
           </p>
           <h5>B. Edit the information about a particular person</h5>
@@ -160,14 +169,14 @@
               <li> A person record is displayed on a single page having four main sections:
                 <ol>
                   <li>Top-left: an area for displaying a photo of the person with buttons that enable you to add to a gallery of photos and to display all photos. You can choose the photo from the gallery that you wish to be displayed on the person page.
-                  <li>Top-right: data that identifies the person including names, data of birth and place of birth. All identification fields can be edited once the @Enable Editing' button has been pressed. It is possible for an inndividual to have (or have had) several nicknames and last names, and clicking on a 'More' button will display a list of all known nicknames/last names. You can add to or edit the list. One identification field shows the individuals 'status': alive or dead (there are restrictions on what you can do to alter the details of someone who is alive).
+                  <li>Top-right: data that identifies the person including names, data of birth and place of birth. All identification fields can be edited once the 'Enable Editing' button has been pressed. It is possible for an individual to have (or have had) several nicknames and last names, and clicking on a 'More' button will display a list of all known nicknames/last names. You can add to or edit the list. One identification field shows the individuals 'status': alive or dead (there are restrictions on what you can do to alter the details of someone who is alive).
                   <li>Below the photo area: relationship data showing the person's parents, siblings and partner (if any). The names are clickable so that you can move quickly to the pages for these people.
                   </li>
                   <li>The bottom area: a list of categories of information about the person (e.g. their partnership(s), where they have lived, education, medical history and much more). Click on one of the category heading to view the data. It is possible to add new items to each category and to edit the existing items.
                   </li>
                 </ol>
               </li>
-              <li> If the search is successful the details for the person found will appear for you to view. If the search finds multiple people matching your search criteria they will be listed and you can choose one to view.</li>
+              <li> If the search is successful the details for the person found will appear for you to examine. If the search finds multiple people matching your search criteria they will be listed and you can choose one to view.</li>
             </ol>
           </p>
           <h5>C. Quickly access a specific person record</h5>
@@ -229,7 +238,7 @@
             <tr><td>S</td></tr>
             <tr><td><a class="" href="">Search membership</a></td></tr>
             <tr><td><a class="" href="#view">Search - see also View</a></td></tr>
-            <tr><td><a class="" href="">Send an email to a member</a></td></tr>
+            <tr><td><a class="" id="sendEmail" href="{{ path_for('doc.sendEmail')}}">Send an email to a member</a></td></tr>
             <tr><td><a class="" id="sendInvitation" href="{{ path_for('doc.sendInvitation')}}">Send an invitation to join Familiaris</a></td></tr>
             <tr><td><a class="" id="signIn" href="{{ path_for('doc.login')}}">Sign in</a></td></tr>
             <tr><td><a class="" href="">Sign up</a></td></tr>

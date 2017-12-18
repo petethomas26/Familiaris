@@ -25,7 +25,7 @@ $( document ).ready(function() {
 	});
 
 
-	// Password meter
+	// Password meter 1 (sign up password)
 	$(function() {
 		var strength = {
 			0: "Bad",
@@ -38,6 +38,40 @@ $( document ).ready(function() {
 		var password = document.getElementById('signup-password');
 		var meter = document.getElementById('password-strength-meter');
 		var text = document.getElementById('password-strength-text');
+		
+		if (password != null) {
+			password.addEventListener('input', function() {
+			  var val = password.value;
+			  var result = zxcvbn(val);
+
+			  // Update the password strength meter
+			  
+			  meter.value = result.score;
+
+			  // Update the text indicator
+			  if (val !== "") {
+			    text.innerHTML = "Password Strength: " + "<strong>" + strength[result.score] + "</strong>" + ". " + "<span class='feedback'>" + result.feedback.warning + " " + result.feedback.suggestions + "</span>";  
+			  } else {
+			    text.innerHTML = "";
+			  }
+			});
+		}
+
+	});
+
+// Password meter 2 (change password)
+	$(function() {
+		var strength = {
+			0: "Bad",
+			1: "Poor",
+			2: "Weak",
+			3: "Good",
+			4: "Strong"
+		}
+
+		password = document.getElementById('password_new');
+		meter = document.getElementById('password-strength-meter-new');
+		text = document.getElementById('password-strength-text-new');
 
 		if (password != null) {
 			password.addEventListener('input', function() {

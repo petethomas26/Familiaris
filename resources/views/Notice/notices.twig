@@ -2,57 +2,72 @@
 
 {% block content %}
 
-<div class="row content">
-	<div class="col-md-9 col-md-offset-3 pb-2 bg-primary">
+<div class="content">
+	<div class="col-sm-9 ">
+		
+		<div class="border border-primary" >
 		<div class="card">
-			<div class="bg-primary text-white py-2">
+			<div class="bg-primary text-white  py-1">
 				<div class="d-flex justify-content-between">
-					<a class="btn btn-primary btn-sm bg-primary ml-2" type="button" href="{{ path_for('notices', {'set':set, 'no':no, 'page': page}) }}">More</a>
-	   				<span class="bg-primary " style="font-size:150%">Notices</span>
-	   				<!-- Search facility -->
+				
+	   				<span class="bg-primary ml-2" style="font-size:150%">Notices</span>
+	   				
 	   				<form class="form-inline bg-primary"  method="get" action="{{path_for('searchNotices')}}">
 						<input class="form-control mr-sm-2" type="text" name='search_term' placeholder="Search for ..." data-toggle="tooltip" data-placement="left" title="Searches for notices containing the word entered here."aria-label="Search">
-						<button class="btn btn-primary my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
+						<button class="btn  btn-primary my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
 					</form>
+					<a class="btn bg-primary btn-sm text-white close" type="button" href="{{ path_for('membership') }}">
+						<span aria-hidden="true">&times;</span>
+					</a>
 				</div>
 		        
   			</div>
 
 		<!--List of all notices-->
 			
-			{% if nots is not empty %}
+			{% if notices is not empty %}
 				<table class="table table-hover">
 				  	<thead>
 					    <tr>
 					      <th>Date</th>
 					      <th>From</th>
-					      <th>Heading
+					      <th>Heading</th>
 					      <th>Notice</th>
 					      <th></th>
 					    </tr>
 				  	</thead>
 				  	<tbody>
-						{% for notice in nots|reverse %}
+				  		{% set index = 0 %}
+						{% for notice in notices %}
 						    <tr>
 						    	<td>{{ notice.date|date("d/m/Y") }}</td>
-						    	<td>{{ notice.memberName }}</td>
+						    	<td>{{ memberNames[index] }}</td>
 						    	<td>{{ notice.heading }}</td>
 						    	<td>{{ notice.notice }}</td>
 						    </tr>
+						    {% set index = index+1 %}
 			  			{% endfor %}
 				   	</tbody>
 				</table>
 				<hr>
+				<div class="mx-auto">
+				{{ notices.links | raw }}
+				</div>
 			{% else %}
 				<p>No more notices.</p>
 			{% endif %}
 		</div>
+		<!--
 		<div class="card-footer">
+			
 			<a class="btn btn-primary btn-sm" type="button" href="{{ path_for('notices', {'set':set, 'no':no, 'page': page}) }}">More</a>
+			
 			<a class="btn btn-primary btn-sm" type="button" href="{{ path_for('notices', {'set':0, 'no':no, 'page': page}) }}">Top</a>
+		
 		</div>
+	-->
+</div>
   </div>
-	</div>
 </div>
 
 

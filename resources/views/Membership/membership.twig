@@ -10,18 +10,26 @@
 <div class="container-fluid text-center">    
   <div class="row content">
     <div class="col-sm-2 sidenav lower text-sm-left">
-      <p><a href="{{ path_for('auth.signup') }}">Sign Up</a></p>
-      <p><a href="{{ path_for('invite') }}">Invite</a></p>
-      <p><a href="{{ path_for('notice') }}">Post a Notice</a></p>
+
+      {% if not auth.check %}
+        <p><a href=" {{ path_for('auth.signup') }} ">Sign Up</a></p>
+      {% endif %}
+      <p><a href="{% if auth.check %} {{ path_for('sendMessage', [], {'email' : ''}) }} {% endif %}">Send email</a></p>
+      <p><a href="{% if auth.check %} {{ path_for('invite') }} {% endif %}" >Invite</a></p>
+      <p><a href="{% if auth.check %} {{ path_for('notice') }} {% endif %}">Post a Notice</a></p>
     </div>
 
     <div class="col-sm-8 text-left"> 
         <p>Members of <span style="font-family:'Great Vibes', serif; font-size:24px;">Familiaris</span> are able to view and edit details of people on our family tree. Normally, members are also on the family tree.</p>
         <hr>
         <h4>How do I become a member of <span style="font-family:'Great Vibes', serif; font-size:28px;">Familiaris</span>?</h4>
-        <p>Membership of <span style="font-family:'Great Vibes', serif; font-size:24px;">Familiaris</span> is by invitation from existing members. To become a member, you should contact an existing member to obtain an invitation. You will then be able to register and become a member.</p>
-        <p>If you already have an invitation, click the button below.</p>
-        <a class="btn btn-primary btn-md" href="{{ path_for('auth.signup') }}" role="button">Sign up</a>
+        <p>Membership of <span style="font-family:'Great Vibes', serif; font-size:24px;">Familiaris</span> is by invitation from an existing member. To become a member, you should send an email to an existing member requesting an invitation. Shortly afterwards you should receive an email from Familiaris containing an invitation code that will enable you to sign up (register) to become a member.</p>
+        <p>To see a list of current members, click the button below.</p>
+        <a class="btn btn-primary btn-md mb-2" href="{{ path_for('listMembers') }}" role="button">List members</a>
+        {% if not auth.check %}
+          <p>If you have an invitation, click the button below.</p>
+          <a class="btn btn-primary btn-md " href="{{ path_for('auth.signup') }}" role="button">Sign up</a>
+        {% endif %}
         <p>Once you are a member you can login to view and edit our family tree.</p>
 
         <hr>
@@ -29,21 +37,27 @@
         <h4>How do I invite someone to join <span style="font-family:'Great Vibes', serif; font-size:28px;">Familiaris</span>?</h4>
         <p>You can invite someone by clicking here:</p>
 
-        <a class="btn btn-primary btn-md" href="{{ path_for('invite') }}" role="button">Invite</a>
+        <a class="btn btn-primary btn-md" href="{% if auth.check %} {{ path_for('invite') }} {% endif %}" role="button">Invite</a>
 
         <hr>
 
         <h4>How can I communicate with other Members?</h4>
         <p>You can communicate with other members in one of two ways. Either by posting a notice which will appear on the Knowledgebase and Membership pages to be seen by all members, or by sending a private email to another member (or group of members).</p>
 
-        <a class="btn btn-primary btn-md" href="{{ path_for('postNotice') }}" role="button">Post Notice</a>
-        <a class="btn btn-primary btn-md" href="" role="button">Send Email</a>
+        <a class="btn btn-primary btn-md" href="{% if auth.check %} {{ path_for('postNotice') }} {% endif %}" role="button">Post Notice</a>
+        <a class="btn btn-primary btn-md" href="{% if auth.check %} {{ path_for('sendMessage') }} {% endif %}" role="button">Send Email</a>
         
     </div>
 
     <div class="col-sm-2 sidenav lower">
-      <a class="btn btn-success btn-sm btn-block" href="{{ path_for('notices', {'set':'0', 'no':'0', 'page':'membership'}) }}" role="button" data-toggle="tooltip" data-placement="top" title="Only the last 10 notices are shown. Click here to see all notices">Notices</a>
-
+      {% if auth.check %}
+        <a class="btn btn-success btn-sm btn-block" href="{{ path_for('notices', {'set':'0', 'no':'0', 'page':'membership'}) }}" role="button" data-toggle="tooltip" data-placement="top" title="Only the last 10 notices are shown. Click here to see all notices">Notices</a>
+      {% else %}
+        <button class="btn btn-success btn-sm btn-block" disabled>Notices</button>
+      {% endif %}
+      
+      {% set count = notices|length %}
+      {% set index = count-1 %}
       {% for notice in notices|reverse %}
 
         <div class="list-group-item list-group-item-action flex-column align-items-start">
@@ -51,9 +65,11 @@
             <h6 class="mb-1">{{ notice.heading }}</h6>
           </div>
           <small class="mb-1 pl-0 ml-0 text-left">{{ notice.notice | raw }}</small>
+          <small class="d-flex w-100 mb-1">{{ memberNames[index] }}</small>
           <small class="d-flex w-100 mb-1">{{ notice.created_at.toFormattedDateString() }}</small>
         </div>
 
+        {% set index = index-1 %}
       {% endfor %}
 
     </div>

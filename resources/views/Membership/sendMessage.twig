@@ -1,0 +1,66 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    <div class="container-fluid text-center">    
+      <div class="row content">
+        
+        <div class="col-sm-7 text-left border border-success p-0"> 
+        	<h4 class="bg-success display-7 pt-2 pb-2 text-white text-center">Send an email to another member</h4>
+        	<div class="m-3">
+            	<form action="{{ path_for('sendMessage') }}" method="post" autocomplete="off">
+
+                    <fieldset class="form-group">
+                        <div class="form-inline">
+                            <label class="col-form-label col-sm-2" for="from">From</label>
+                            <input type="text" class="form-control col-sm-7" name="from" id="from" value="{{ name }}" readonly>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <div class="form-inline">
+                            <label class="col-form-label col-sm-2" for="email">To (email address)</label>
+                            <input type="email" class="form-control mr-sm-2 col-sm-7" name="email" id="email" value="{{ email }}">
+                            <a href="{{ path_for('findMember') }}" role="button" class="btn btn-success btn-md">Find member</a>
+                        </div>
+                    </fieldset>
+
+
+                    <fieldset class="form-group {{ validationErrors.subject ? ' has-warning' : '' }}">
+                        <div class="form-inline">
+                          <label class="col-form-label col-sm-2" for="subject">Subject</label>
+                          <input type="text" class="form-control  col-sm-10 {{ validationErrors.subject ? ' form-control-warning' : ''}}" name="subject" id="subject" value="{{ old.subject }}">
+                           <div class="form-control-feedback text-danger">{{ validationErrors.subject ? validationErrors.subject | first : ''}}
+                          </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="form-group {{ validationErrors.editor ? ' has-warning' : '' }}">
+                        <label class="col-form-label col-3" for="message">Message</label>
+                        <textarea name="editor"   class="form-control {{ validationErrors.editor ? ' form-control-warning' : ''}} " id="message" value="{{ old.editor }}"></textarea>
+
+                        <!-- CKEditor : replaces the textarea above named 'editor'-->
+                        <script>
+                                CKEDITOR.replace( 'editor' {
+                                    height : '150px'
+                                });
+                        </script>
+
+                         <div class="form-control-feedback text-danger">{{ validationErrors.editor ? validationErrors.editor | first : ''}}
+                        </div>
+
+                    </fieldset>
+
+                    <input type="hidden" name="name" value="{{name}}">
+                
+                    <button type="submit" class="btn btn-success btn-md mb-2">Send</button>
+                    <a href="{{path_for('membership')}}" role="button" class="btn btn-secondary btn-md mb-2">Cancel</a>
+                    {{ csrf.field | raw }}
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

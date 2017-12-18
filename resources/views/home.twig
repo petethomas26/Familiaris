@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="jumbotron" id="home">
-  <h1 class="display-1 mb-0 text-white" style="font-family:'Great Vibes', serif; font-size:110px; text-shadow: 4px 2px black">Familiaris</h1>
+  <h1 class="display-1 mb-0 ml-5 text-white" style="font-family:'Great Vibes', serif; font-size:110px; text-shadow: 4px 2px black">Familiaris</h1>
   
   <h3 class="display-7 text-center text-white" style="text-shadow: 2px 2px black">A family tree with a difference<br>"Wicker or wood?"</h3>
   <p class="display-6 text-white float-right mt-4">Lanhydrock</p>
@@ -11,27 +11,30 @@
 
 <div>
 <p class="display-6 text-center">Access our knowledge base to find out about our family members and the relationships between them.<br>
-    Expand our knowledge base by adding your knowledge about family members.<br>If you think you may be a member of our family and want to join us, click <span><a href="{{ path_for('membership') }}"}}> here</a></span>.</p>
+    Expand our knowledge base by adding your knowledge about family members.<br>If you think you may belong to our family and want to join us, click <span><a href="{{ path_for('membership') }}"}}> here</a></span>.</p>
 
 </div>
 
 
 <div>
-    <h4 class="display-5 text-center bg-success text-white" id="howItWorks" >How <span style="font-family:'Great Vibes', serif; font-size:28px;">Familiaris</span> works</h4>
+    <h4 class="display-5 text-center bg-success text-white" id="howItWorks" >How <span style="font-family:'Great Vibes', serif; font-size:28px; text-shadow: 1px 1px black">Familiaris</span> works</h4>
 </div>
 
 <div class="card-deck-wrapper" id="cdw">
 	<div class="card-deck">
         <div class="card">
+            
             <div class="card-block">
                 <h4 class="card-title">Members</h4>
-                <p class="card-text">Users of <span style="font-family:'Great Vibes', serif; font-size:20px;">Familiaris</span> are all members of our family; we are all related to each other in some way.<br>If you want to find out whether you are a member of our family and want to join click here.</p>
+                <p class="card-text">Users of <span style="font-family:'Great Vibes', serif; font-size:20px;">Familiaris</span> are all members of our family; we are all related to each other in some way.<br>If you want to find out whether you are a member of our family and want to join click the button below.</p>
                 <p>
-                    <a class="btn btn-primary btn-sm" href="{{ path_for('membership') }}" role="button">Learn how to join</a>
+                    <a class="btn btn-success btn-sm" href="{{ path_for('membership') }}" role="button">Learn how to join</a>
                 </p>
             </div>
-            <img class="card-img-bottom" src="{{ base_url() }}/images/waterfall.png" width="90%" height="200" alt="Card image cap">
-
+            
+            <img class="card-img-bottom" src="{{ base_url }}/images/waterfall.png" alt="Waterfall">
+            
+            
         </div>
                     
         <div class="card">
@@ -39,10 +42,10 @@
                 <h4 class="card-title">Knowledge Base</h4>
                 <p class="card-text">Our knowledge base contains information about individuals (we call them 'People') both living and deceased who belong to our family.<br>In essence, it is a family tree with comprehensive information about individuals.<br>It has been built up by family members adding information about themselves and others they know about.<br>Family members can edit the knowledge base to ensure that its contents are as accurate as possible.</p>
                 <p>
-                	<a class="btn btn-primary btn-sm" href="{{ path_for('knowledgebase') }}" role="button">Learn more</a>
+                	<a class="btn btn-success btn-sm" href="{{ path_for('knowledgebase') }}" role="button">Learn more</a>
                 </p>
             </div>
-            
+            <span style="font-family:'Great Vibes', serif; font-size:3em; text-shadow: 1px 1px gray" class="text-center">Familiaris</span>
         </div>
 
         <div class="card">
@@ -53,14 +56,19 @@
                 <h4>Privacy</h4>
                 <p>
                 We take privacy very seriously: you can specify who has permission to view data about yourself or your children.</p>
-                {% if install.check %}
+                <h4>Where to begin?</h4>
+                <p>
+                    You are welcome to browse the site but you won't be able to view the family tree until you become a member. To become a member you will need an invitation (click <span><a href="{{ path_for('membership') }}"}}> here</a></span>) and then you can sign up.
+                </p>
+                {% if install.check and not auth.check %}
                     <p>
-                        <a class="btn btn-primary btn-sm" href="{{ path_for('auth.signin') }}" role="button">Sign in</a>
+                        <a class="btn btn-info btn-sm" href="{{ path_for('auth.signup') }}" role="button">Sign up</a>
+                        <a class="btn btn-info btn-sm" href="{{ path_for('auth.signin') }}" role="button">Sign in</a>
                     </p>
                 {% endif %}
         	</div>
 
-            <span style="font-family:'Great Vibes', serif; font-size:3em;">Familiaris</span>
+            
         </div>
     </div>
     

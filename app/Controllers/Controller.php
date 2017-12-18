@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 class Controller {
 
 	protected $container;
@@ -127,15 +129,17 @@ EOT;
 	}
 
 	// $to is an array with possibly multiple email addresses
-	protected function mailer($from, $to, $subject, $body) {
+	protected function mailer($from, $name, $to, $subject, $body) {
 
-		$this->container->mailer->From = $from;
-		$this->container->mailer->FromName = 'Familiaris';
+		//$this->container->mailer->From = $from;
+		//$this->container->mailer->FromName = $name;
+		$this->container->mailer->setFrom($from, $name);  //phpmailer 6
 		//$m->addReplyTo('reply@gmail.com', 'Reply address');
+		
 		foreach ($to as $address) {
-			$this->container->mailer->addAddress($address, 'Familiaris');
+			$this->container->mailer->addAddress($address, $name);
 		};
-
+		
 		//$m->addCC('pete.thomas.26@gmail.com', 'Pete Thomas');
 		//$m->addBCC('pete.thomas.26@gmail.com', 'Pete Thomas');
 
@@ -143,11 +147,34 @@ EOT;
 		$this->container->mailer->Body = $body;
 		$this->container->mailer->AltBody = strip_tags($body);
 
+		//dump($from, $name, $to, $subject, $body); die();
+		
+		/*****************TEST EMAIL *******************
+		$mail = new PHPMailer;
+		$mail->isSMTP();
+		$mail->Host = 'localhost';
+		$mail->Port = 26;
+		$mail->CharSet = 'utf-8';
+		$mail->setFrom('pete.thomas.26@gmail.com', 'Pete Thomas');
+		$mail->addAddress('petethomas@familiaris.uk', 'Pete Thomas');
+		$mail->Subject = 'PHPMailer test';
+		$mail->Body='Hi There';
+
+		if ($mail->send()) {
+			return 'OK';
+		} else {
+			return $mail->ErrorInfo;
+		}
+		
+*/
+
+
 		if ($this->container->mailer->send()) {
 			return "OK";
 		} else {
-			return $this->container->mailer->ErrorInfo;;
+			return $this->container->mailer->ErrorInfo;
 		}
+
 	}
-	
+
 }

@@ -2,8 +2,7 @@
 
 {% block content %}
 
-  
-  	<div class="row">
+	<div class="row">
 
 		<div class="col-md-6 col-md-offset-3 col-md-6 pb-2 pt-2 px-2 bg-success">
 			<div class="card">
@@ -13,7 +12,7 @@
 	  			<div class="card-img-overlay">
 					<p class="card-text text-white">
 		   				<span style="font-family:'Great Vibes', serif; font-size:32px;">Familiaris </span>
-						<span style="font-size:32px;">Change Password</span>
+						<span style="font-size:32px;">Reset Password</span>
 					</p>
   				</div>
 
@@ -22,16 +21,7 @@
   			<div class="card">
 				
   				<div class="card-body">
-				    <form action="{{ path_for('auth.password.change') }}" method="post" autocomplete="off">
-				    	
-				    	<div class="form-group{{ validationErrors.password_old ? ' has-warning' : '' }} row">
-				    		<label class="form-control-label col-4" for="password_old" >Current Password</label>
-				    		<div class="col-7">
-								<input type="password" name="password_old" id="password_old" class="form-control{{ validationErrors.password_old ? ' form-control-warning' : ''}} form-control-sm">
-								<div class="form-control-feedback text-danger">{{ validationErrors.password_old ? validationErrors.password_old | first : ''}}
-								</div>
-							</div>
-				    	</div>
+				    <form action="{{ path_for('auth.password.reset') }}" method="post" autocomplete="off">
 
 				    	<div class="form-group{{ validationErrors.password_new ? ' has-warning' : '' }} row">
 				    		<label class="form-control-label col-4" for="password_new">New Password</label>
@@ -55,8 +45,11 @@
 								</div>
 					    	</div>
 					    </div>
+
+					    <input type="hidden" name="{{email}}">
+					    <input type="hidden" name="{{hashIdentifier | url_encode}}">
 				    	
-						<button type="submit" class="btn btn-success">Change password</button>
+						<button type="submit" class="btn btn-success">Reset password</button>
 
 						<a href="{{ path_for('home') }}" role="button" class="btn btn-secondary">Cancel</a>
 

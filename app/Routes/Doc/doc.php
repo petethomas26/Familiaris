@@ -17,5 +17,7 @@ $app->group('', function() {
 
 	$this->get('/doc/sendInvitation', 'DocController:sendInvitation')->setName('doc.sendInvitation');
 
+	$this->get('/doc/sendEmail', 'DocController:sendEmail')->setName('doc.sendEmail');
+
 
 });

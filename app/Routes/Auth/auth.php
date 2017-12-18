@@ -17,7 +17,15 @@ $app->group('', function() {
 
 	$this->post('/auth/install', 'InstallController:postInstall');
 
-});
+	$this->get('/auth/password/recover', 'PasswordController:getRecoverPassword')->setName('auth.password.recover');
+
+	$this->post('/auth/password/recover', 'PasswordController:postRecoverPassword');
+
+	$this->get('/auth/password/reset', 'PasswordController:getResetPassword')->setName('auth.password.reset');
+
+	$this->post('/auth/password/reset', 'PasswordController:postResetPassword');
+
+})->add(new GuestMiddleware($container));
 
 $app->group('', function() {
 
@@ -36,3 +44,4 @@ $app->group('', function() {
 	$this->post('/auth/email/change', 'EmailController:postChangeEmail');
 
 })->add(new AuthMiddleware($container));
+

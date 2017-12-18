@@ -6,21 +6,47 @@ use App\Controllers\Controller;
 
 use App\Models\Member;
 
+use App\Models\Address;
+
 use Respect\Validation\Validator as v;
 
 class MembershipController extends Controller {
 
+	/****************************************************************************************
+	* Prepares the membership page
+	* The membership page can be viewed by visitors who have not yet signed in or signed up.
+	* If a visitor is not signed in, they:
+	*    may not invite, post a notice, send an email or view notices.
+	* If a visitor is signed in, they:
+	*    may not sign up (as they must already be signed up in order to have signed in)
+	* ***************************************************************************************/
 	public function membership($request, $response) {
-		// Get upto 10 latest Notices from db and pass them to Membership page to be displayed
-		$count =  \App\Models\Notice::count();
-		if ($count > 10) {
-			$skip = $count - 10;
-			$notices = \App\Models\Notice::skip($skip)->take(10)->get();
+		// Is visitor signed in?
+		$isSignedIn = $this->container->auth->check();
+
+		if ($isSignedIn) {
+		
+			// Get upto 10 latest Notices from db and pass them to Membership page to be displayed
+			$count =  \App\Models\Notice::count();
+			if ($count > 10) {
+				$skip = $count - 10;
+				$notices = \App\Models\Notice::skip($skip)->take(10)->get();
+			} else {
+				$notices = \App\Models\Notice::get();
+			}
+
+			//Get the associated member names
+			$memberNames = [];
+			foreach ($notices as $notice) {
+				$memberId = $notice['member_id'];
+				$memberName = ($memberId > 0) ? Member::find($memberId)->value('name') : 'Admin';
+				$memberNames[] = $memberName;
+			}
 		} else {
-			$notices = \App\Models\Notice::get();
+			$notices = [];
 		}
 		
-		return $this->container->view->render($response, 'Membership/membership.twig', compact('notices'));
+		return $this->container->view->render($response, 'Membership/membership.twig', compact('notices', 'memberNames'));
 	}
 
 	public function invite($request, $response) {
@@ -58,8 +84,8 @@ class MembershipController extends Controller {
 		$invitationCode = $this->getInvitation($toEmail, $memberId, $personId);
 
 		// Create an invitation email
-		$familiarisWebAddress = "familiaris.uk";
-		$familiarisAdminEmailAddress = "Familiaris Email Address"; //TO DO
+		$familiarisWebAddress = "http://localhost:8080/Familiaris/public/"; //https://www.familiaris.uk";
+		$familiarisAdminEmailAddress = "admin@familiaris.uk";
 
 		$body = "<p>Dear " . $firstName . ",</p>" . $memberName . " has suggested that you might like to join Familiaris, a website containing our family tree. Our website contains information about people in our family (including our ancestors).</p><p>If you would like to know more, please take a look at our site: </p><p>" . $familiarisWebAddress . "</p><p>If you would like to join Familiaris, please sign up and enter the following invitation code (you can only view specific details about people if you have received an invitation and have signed up):</p><p>" . $invitationCode . " </p> <p>With best wishes</p><p>Familiaris</p><p>If you have any concerns about this email please email our administrators at " . $familiarisAdminEmailAddress . "</p>";
 
@@ -89,16 +115,19 @@ class MembershipController extends Controller {
 	}
 
 	private function sendInvitationEmail($to, $body) {
-		$from = "petethomas26@zoho.com";// Make this the email address
-
-		$subject = "Invitation to join our family tree website";
-
-		$message = $this->mailer($from, $to, $subject, $body);
+		$from = "pete.thomas.26@gmail.com";// Make this the email address ; "admin@familiaris.uk";
+		$name = "Familiaris Admin";
+		$subject = "Invitation to join our family tree website (familiaris)";
+		
+		$message = $this->mailer($from, $name, $to, $subject, $body);
+		
 		if ($message === 'OK') {
 			$message ="Invitation has been sent.";
 		} else {
 			$message = "Problem sending invitation; check email address and try again later. ". $message;
 		}
+
+		
 		return $message;
 	}
 
@@ -117,7 +146,7 @@ class MembershipController extends Controller {
 
 		$validation = $this->container->validator->validate($request, [
 			'heading' => v::notEmpty(),
-			'editor1' => v::notEmpty()->isPure($this->container)
+			'editor' => v::notEmpty()->isPure($this->container)
 		]);
 
 
@@ -128,7 +157,7 @@ class MembershipController extends Controller {
 
 		// Get form elements
 		$heading = $request->getParam('heading');
-		$body = $request->getParam('editor1');
+		$body = $request->getParam('editor');
 		$memberId = $_SESSION['member'];
 
 		// Create a new model
@@ -144,6 +173,131 @@ class MembershipController extends Controller {
 		return $response->withRedirect($this->container->router->pathFor('membership'));
 	}
 
+
+/**************************************
+* Search for a memebr
+* *************************************/
+	public function getFindMember($request, $response) {
+		return $this->container->view->render($response, 'Membership/findMember.twig');
+	}
+
 	
+	public function postFindMember($request, $response) {
+		$memberName = $request->getParam('memberName');
+		
+		$threshold = 1.0; // Similarity measure not currently implemented
+
+		$result = Member::findMembers($memberName, $threshold);
+
+		$count = count($result['members']);
+
+		// message comes from findMembers function
+		$this->container->flash->addMessage('info', $result['message']);
+		if ($count == 0) {
+			// return to member search page
+			return $response->withRedirect($this->container->router->pathFor('findMember'));
+		} elseif ($count == 1) {
+			// go to send message page
+			
+			$member = $result['members'][0];
+			return $response->withRedirect($this->container->router->pathFor('sendMessage', [], $member));
+		} else {
+			// go to choose member page
+			$member = $result['members'];
+			return $response->withRedirect($this->container->router->pathFor('chooseMember', [], $result));
+		};
+		
+	}
+
+/***********************************************************************
+* Send a message via email to another member
+* Member is found using a search
+* **********************************************************************/
+
+	public function sendMessage($request, $response) {
+		$email = $request->getParam('email');
+		$memberId = $_SESSION['member'];
+		$member = \App\Models\Member::find($memberId);
+		$from = $member['email'];
+		$name = $member['name'];
+		return $this->container->view->render($response, 'Membership/sendMessage.twig', compact('email', 'from', 'name'));
+	}
+
+	/****************************************************
+	* Sends an email to some email address which does
+	* not have to be the address of a member
+	* ***************************************************/
+
+	public function postSendMessage($request, $response) {
+		// Validate form
+		$validation = $this->container->validator->validate($request, [
+			'from' => v::notEmpty()->email(),
+			'name' => v::notEmpty(),
+			'email' => v::notEmpty()->email(),
+			'subject' => v::notEmpty(),
+			'editor' => v::notEmpty()->isPure($this->container)
+		]);
+
+		if ($validation->failed()) {
+			$this->container->flash->addMessage('error', $validation->firstMessage());
+			return $response->withRedirect($this->container->router->pathFor('membership'));
+		};
+
+		// Get form data
+		$fromMemberEmail = $request->getParam('from');
+		$from = 'admin@familiaris.uk';
+		$name = $request->getParam('name');
+		$toEmail = $request->getParam('email');
+		$subject = $request->getParam('subject');
+		$message = $request->getParam('editor');
+
+		// Add to email subject
+      	$subject = $subject . " (Familiaris)";
+
+      	// Add footer to email message
+      	$footer = "This message was sent via Familiaris; reply to: " . $fromMemberEmail;
+		$message = $message . "\n\n" . $footer;
+
+		// Try to send email; $to must be an array of addresses
+		$to[] = $toEmail;
+
+		$result = $this->mailer($from, $name, $to, $subject, $message);
+		if ($result === "OK") {
+			$message ="Message sent";
+			$this->container->flash->addMessage('info', $message);
+		} else {
+			$message = "Problem sending message; check email address and try again later. " . $result;
+			$this->container->flash->addMessage('error', $message);
+		}
+
+		return $response->withRedirect($this->container->router->pathFor('membership'));
+	}
+
+	/**********************************************************
+	* Obtains a list of the names of current members
+	* *********************************************************/
+	public function listMembers($request, $response) {
+		// Get list of names from db
+		$members = Member::orderBy('name')->pluck('my_person_id', 'name');
+
+		// Find current/latest town for each member ('Unknown' means no address found)
+		$towns = [];
+		foreach ($members as $member => $personId) {
+			if ($personId === 0) {
+				$towns[] = "Unknown";
+			} else {
+				$address = Address::latestAddress($personId);
+				if (isset($address)) {
+					$towns[] = $address.town;
+				} else {
+					$towns[] = "Unknown";
+				}
+			}
+			
+		}
+		
+		return $this->container->view->render($response, 'Membership/listMembers.twig', compact('members', 'towns'));
+
+	}
 
 }

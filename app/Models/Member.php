@@ -13,6 +13,9 @@ class Member extends Model {
 		'email',
 		'previous_email', // When an email is changed, the previous email is saved
 		'password',
+		'recover_selector', // password recovery 
+		'recover_identifier', // password recovery 
+		'recover_time',
 		'status'
 	];
 
@@ -24,6 +27,9 @@ class Member extends Model {
 			$table->string('email', 50);
 			$table->string('previous_email', 50);
 			$table->string('password', 255);
+			$table->string('recover_selector', 255);
+			$table->string('recover_identifier', 255);
+			$table->integer('recover_time');
 			$table->string('status', 15);
 			$table->timestamps();
 		});
@@ -47,6 +53,14 @@ class Member extends Model {
 		]);
 	}
 
+	public function setRecoverToken($selector,$recoverIdentifier){
+		$this->update([
+			'recover_selector' => $selector,
+			'recover_identifier' => hash('sha256', $recoverIdentifier),
+			'recover_time' => time(),
+		]);
+	}
+
 	public function getEmail() {
 		return $this->email;
 	}
@@ -59,8 +73,16 @@ class Member extends Model {
 		return $this->name;
 	}
 
+	public function getRecoverIdentifier() {
+		return $this->recover_identifier;
+	}
+
 	public function getPersonId() {
 		return $this->my_person_id;
+	}
+
+	public function getElapsedRecoverTime() {
+		return $elapsedTime = time() - $this->recover_time;
 	}
 
 	/*****************************************************************************

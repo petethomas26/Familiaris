@@ -1,0 +1,37 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+<div class="container-fluid text-center">    
+  <div class="row content">
+    
+    <div class="col-sm-4 text-left border border-success p-0"> 
+        <h4 class="bg-success display-7 pt-2 pb-2 pl-2 text-white">Search for a member</h4>
+        <div class="ml-3 mb-2">
+            <form action="{{ path_for('postFindMember') }}" method="post" autocomplete="off">
+
+                <fieldset class="form-group {{ validationErrors.memberName ? ' has-warning' : '' }}">
+                    <label for="memberName">Enter the member's name</label>
+                    <div class="form-inline">
+                        <input type="text" class="form-control {{ validationErrors.memberName ? ' form-control-warning' : ''}} " name="memberName" id="memberName" placeholder="The member's name" value="{{ old.memberName }}">
+                        <div class="form-control-feedback text-danger">{{ validationErrors.memberName ? validationErrors.memberName | first : ''}}
+                        </div>
+
+                       <button type="submit" class="btn btn-success btn-md ml-1">Search</button>
+                    </div>
+                </fieldset>
+
+                <a href="{{path_for('sendMessage')}}" role="button" class="btn btn-secondary btn-md">Cancel</a>
+
+                {{ csrf.field | raw }}
+            </form>
+
+        </div>
+       
+
+    </div>
+  </div>
+</div>
+ 
+
+{% endblock %}

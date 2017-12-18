@@ -8,7 +8,7 @@ $app->group('', function() {
 
 	$this->get('/membership/member/{id}', 'MembershipController:getMember')->setName('member');
 
-	$this->get('/membership/members', 'MembershipController:getMembers')->setName('members');
+	$this->get('/membership/members', 'MembershipController:listMembers')->setName('listMembers');
 
 	$this->post('/membership', 'MembershipController:postMembership');
 

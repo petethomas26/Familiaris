@@ -4,6 +4,7 @@ namespace App\Middleware;
 
 class AuthMiddleware extends Middleware {
 
+    // Guard against user taking action if not authorised (signed in)
 	public function __invoke($request, $response, $next) {
 
 		if (!$this->container->auth->check()) {

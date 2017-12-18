@@ -4,6 +4,7 @@ namespace App\Middleware;
 
 class OldInputMiddleware extends Middleware {
 
+	// Not sure what thia is supposed to do; not used
 	public function __invoke($request, $response, $next) {
 
 		if (isset($_SESSION['old'])) {

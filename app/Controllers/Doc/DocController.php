@@ -33,5 +33,9 @@ class DocController extends Controller {
 		return $this->container->view->render($response, 'Doc/sendInvitation.twig');
 	}
 
+	public function sendEmail($request, $response) {
+		return $this->container->view->render($response, 'Doc/sendEmail.twig');
+	}
+
 
 }

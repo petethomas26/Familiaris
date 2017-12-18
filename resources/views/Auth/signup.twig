@@ -7,8 +7,7 @@
 		<div class="col-md-6 col-md-offset-3 pb-2 pt-2 px-2 bg-success">
 
 			<div class="card">
-
-				<img class="card-img-top" src="{{ base_url() }}/css/gardens.png" height="100px"  alt="Rhododendron Garden">
+				<img class="card-img-top" src="{{ base_url }}/css/gardens.png" height="100px"  alt="Rhododendron Garden">
 
 				<div class="card-img-overlay">
 					<p class="card-text text-white">
@@ -16,10 +15,11 @@
 						<span style="font-size:32px;">Sign up</span>
 					</p>
   				</div>
-  			</div>
 
+			</div>
 
 			<div class="card">
+
   				<div class="card-body">
   				
 				    <form action="{{ path_for('auth.signup') }}" method="post" autocomplete="off">
@@ -48,8 +48,8 @@
 				    		<label class="form-control-label col-4" for="password" data-toggle="tooltip" data-placement="top" title="You will need this whenever you sign in. Please make it secure: the strength meter will assess its strength.">Password</label>
 				    		<div class="col-7">
 								<input type="password" name="password" id="signup-password" class="form-control{{ validationErrors.password ? ' form-control-warning' : ''}} form-control-sm">
-								<meter min="0" max="4" id="password-strength-meter"></meter>
-								<div id="password-strength-text"></div>
+								<meter min="0" max="4" id="password-strength-meter" class="mb-0"></meter>
+								<div id="password-strength-text"><small>Password strength indicator</small></div>
 								
 								<div class="form-control-feedback text-danger">{{ validationErrors.password ? validationErrors.password | first : ''}}
 								</div>
@@ -59,7 +59,7 @@
 
 				    	<div class="form-group{{ validationErrors.password_confirm ? ' has-warning' : '' }} row">
 				    		<label class="form-control-label col-4" for="password_confirm" data-toggle="tooltip" data-placement="top" title="Re-enter your password.">Confirm Password</label>
-				    		<div class="col-7">
+				    		<div class="col-7 mt-1">
 								<input type="password" name="password_confirm" id="password_confirm" class="form-control{{ validationErrors.password_confirm ? ' form-control-warning' : ''}} form-control-sm">
 								<div class="form-control-feedback text-danger">{{ validationErrors.password_confirm ? validationErrors.password_confirm | first : ''}}
 								</div>

@@ -4,7 +4,7 @@ namespace App\Middleware;
 
 class ValidationErrorsMiddleware extends Middleware {
 
-
+	// Not sure what this does; not used
 	public function __invoke($request, $response, $next) {
 		
 		if (isset($_SESSION['errs'])) {

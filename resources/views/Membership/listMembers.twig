@@ -1,0 +1,31 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+<div class="container-fluid text-center">    
+	<div class="row content">
+    	<div class="col-sm-4 text-left"> 
+			<h4 class="bg-success display-7 pt-2 pb-2 pl-2 text-white text-center">Current members</h4>
+			<p>(Temporary listing format)</p>
+			<h6>There are currently {{ members | length  }} members:</h6>
+			<table>
+				<thead class="table">
+					<th>Member Name</th>
+					<th>Location</th>
+				</thead>
+				<tbody>
+					{% set index = 0 %}
+					{% for key in members | keys  %}
+						<tr>
+							<td>{{key}}</td>
+							<td>{{towns[index] }}</td>
+						</tr>
+						{% set index = index + 1 %}
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

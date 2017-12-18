@@ -9,7 +9,7 @@
     </div>
     <div class="col-sm-8 text-left"> 
 		<h4 class="bg-success display-7 pt-2 pb-2 pl-2 text-white">Create a notice for all members to see</h4>
-		<p>Enter your (brief) message below. The notice will appear in the right-hnd column to be read by other members.</p>
+		<p>Enter your (brief) message below. The notice will appear in the right-hnd column pf the Knowledgebase and membership pages to be read by other members.</p>
 		
 		<hr>
 
@@ -17,15 +17,24 @@
 
 			<fieldset class="form-group">
 	            <label for="heading">Heading</label>
-	            <input type="text" name="heading" rows="10" cols="30" class="form-control" id="heading"></textarea>
+	            <input type="text" name="heading" rows="10" cols="30" class="form-control form-control-sm" id="heading"></textarea>
 	        </fieldset>
 	    
 	        <fieldset class="form-group">
-	            <label for="notice">Notice</label>
-	            <textarea name="editor1" rows="10" cols="30" class="form-control" id="notice"></textarea>
+	            <label for="notice" title="Editor lets you layout and format your message">Notice</label>
+	            <textarea name="editor" rows="5" class="form-control" id="notice"></textarea>
+
+				<!-- CKEditor : replaces the textarea above named 'editor'-->
+				<script>
+						CKEDITOR.replace( 'editor' );
+				</script>
+
 	        </fieldset>
 	        
 	        <button type="submit" class="btn btn-primary btn-md">Post notice</button>
+
+	        <a href="{{path_for('membership')}}" role="button" class="btn btn-secondary btn-md">Cancel</a>
+
 	        {{ csrf.field | raw }}
 	    </form>
 

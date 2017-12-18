@@ -8,53 +8,32 @@ use App\Models\Notice;
 
 use App\Models\Person;
 
+use App\Models\Member;
+
 use Respect\Validation\Validator as v;
+
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class NoticeController extends Controller {
 
 	
-/*************************************************************
-* Gets 10 notices from db to be displayed on the Notices page
-* ************************************************************/
+/***************************************************************
+* Paginates notices from db to be displayed on the Notices page
+* *************************************************************/
+
 public function getNotices($request, $response, $args) {
-	$set = $args['set'];
-	$no = $args['no'];
-	$page = $args['page'];
 
-	$listLength = 10;
-
-	if ($set == 0) {
-		$no = \App\Models\Notice::count();
+	// get a page of notices
+	$notices = Notice::paginate(5)->appends($request->getParams()); 
+	//Get the associated member names
+	$memberNames = [];
+	foreach ($notices as $notice) {
+		$memberId = $notice['member_id'];
+		$memberName = ($memberId > 0) ? Member::find($memberId)->value('name') : 'Admin';
+		$memberNames[] = $memberName;
 	}
-	$left = $no - $set*$listLength; 
-	$lim = ($left > $listLength) ? $listLength : $left;
-	$off = $no - ($set+1)*$listLength ;
-	$off = ($off < 1) ? 0 : $off;
-	if ($left > 0) {
-		$notices = \App\Models\Notice::offset($off)->limit($lim)->get();
-		$nots = [];
-		foreach ($notices as $notice) {
-			$entry['date'] = $notice['created_at'];
-			$memberId = $notice['member_id'];
-			$entry['memberId'] = $memberId;
-			if ($memberId === 0) {
-				$entry['memberName'] = 'System';
-			} else {
-				$member = \App\Models\Member::find($memberId);
-				if ($member !== null) {
-					$entry['memberName'] = $member['name'];
-				} else {
-					$entry['memberName'] = "unknown member";
-				};
-			};
-			$entry['heading'] = $notice['heading'];
-			$entry['notice'] = $notice['notice'];
-			$nots[] = $entry;
-		};
-		$set++;
-	};
-
-	return $this->container->view->render($response, 'Notice/notices.twig', compact('nots', 'set', 'no', 'page'));
+	// Display the page
+	return $this->container->view->render($response, 'Notice/notices.twig', compact('notices', 'memberNames'));
 }
 
 public function postNotices($request, $response, $args) {
